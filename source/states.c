@@ -55,6 +55,7 @@ void st_falling(){
 	static Timer timer = {1, 0, 0}; // initial 1 second
 	static Timer wall_clock = {1, 0, 0};
 	static int score = 0;
+	int right_left = 0;
 
 
 	Board* board = (Board*)scene.objects->data[0];
@@ -65,7 +66,7 @@ void st_falling(){
 	sprintf(lbl_time->text, "time:\n%04d", wall_clock.count);
 	sprintf(lbl_score->text, "score:\n%04d", score);
 
-	int right_left = 
+	right_left = 
 		keyboard.keyHit(keyboard.RIGHT) -
 		keyboard.keyHit(keyboard.LEFT);
 	
