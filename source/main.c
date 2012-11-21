@@ -9,6 +9,7 @@
 #include "utils/timer.h"
 #include "utils/rawdimp.h"
 #include "utils/contain.h"
+#include "utils/timer.h"
 #include "fpscont.h"
 #include "board.h"
 #include "wave.h"
@@ -19,12 +20,15 @@
 #include <stdio.h>
 
 
-Scene scene;
+extern struct Scene scene;
 
 int main(int argc, char* argv[]){
 
 
 	display.create(640, 480);
+	gl_init();
+	init_keyboard();
+	init_mouse();
 
 
 	// Load geometry data
@@ -33,7 +37,7 @@ int main(int argc, char* argv[]){
 	glGenBuffers(1, &bo_vertex);
 	glGenBuffers(1, &bo_index);
 
-	GLuint* count_nodes = rawdimp("../wtetris/scene.rawd", bo_vertex, bo_index);
+	GLuint* count_nodes = rawdimp("scene.rawd", bo_vertex, bo_index);
 	Geom* nodes = (Geom*)(count_nodes + 1);
 	Geom* goem_border = nodes;
 	Geom* geom_digits = nodes + 1;
@@ -42,8 +46,8 @@ int main(int argc, char* argv[]){
 
 	// Create and load shader programs
 	//
-	char* src_vs = file.loadText("../wtetris/shaders/base.vs");
-	char* src_fs = file.loadText("../wtetris/shaders/base.fs");
+	char* src_vs = file.loadText("base.vs");
+	char* src_fs = file.loadText("base.fs");
 
 	GLuint vs = gl.createShader(GL_VERTEX_SHADER, src_vs);
 	GLuint fs = gl.createShader(GL_FRAGMENT_SHADER, src_fs);
@@ -75,6 +79,7 @@ int main(int argc, char* argv[]){
 
 
 	// Hide mouse, and set to center
+	init_mouse();
 	mouse.hide();
 	mouse.setPos(display.getWidth()/2, display.getHeight()/2);
 
@@ -155,6 +160,7 @@ int main(int argc, char* argv[]){
 	// Initial game state
 	//
 	scene.state = st_title;
+	//Unit32 time_delta = 0;
 
 	
 	// LOOP -----------------------------------------------------------------------
@@ -172,9 +178,10 @@ int main(int argc, char* argv[]){
 		}
 
 		//fpscont(&cam);
-		scene.state(&board);
+		//scene.state(&board);
+		scene.state();
 		
-		wave.time += 0.2;
+		wave.time += 0.5;
 		waveToProg(&wave);
 
 		cameraWorldToView(&cam);
